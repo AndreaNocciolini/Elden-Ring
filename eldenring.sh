@@ -176,7 +176,7 @@ sleep 4
 echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
 
 soldier=62
-
+afplay ./sounds/initSword.aiff
 
 until [[ $soldier -le 1 && $hp -gt 1 || $soldier -gt 1 && $hp -le 1 ]]
 do
@@ -193,12 +193,12 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
         #echo "$soldier"
     else
         echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
-        hp=$((hp -= 3 ))
+        hp=$((hp -= 4 ))
         #echo "$hp"
     fi
 done
 
-if [[ $beast -le 0 ]]; then
+if [[ $soldier -le 0 ]]; then
     echo "Soldier VANQUISHED! Congrats, fellow tarnished!"
     echo "You have $hp hp left."
     sleep 2
