@@ -11,37 +11,58 @@ init() {
     echo "."
     sleep 1.5
 
+    echo ""
     echo "Welcome, tarnished. You're finally awake."
+    echo ""
     sleep 5
+    echo ""
     echo "You are about to begin your journey in The Lands Betweens."
+    echo ""
     sleep 5
-    echo "This land, once home to humans and animals, is now in the hands of monsters and demigods, all struggling for control over this decayed world."
+    echo ""
+    echo "This land, once home to humans, is now in the hands of monsters and demigods, all struggling for control over this decayed world."
+    echo ""
     sleep 5
+    echo ""
     echo "Our beloved queen, Marika the Eternal, chosen by the Greater Will, is no more. The Elden Ring has been fragmented, and its power splitted among the new ruler of this world."
+    echo ""
     sleep 5
+    echo ""
     echo "It's now your duty to vanquish this false rulers, who are nothing but beasts thirsting for blood and power, and bring a new dawn to these barren lands."
+    echo ""
     sleep 5
-    echo "You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet."
+    echo ""
+    echo "You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet. Choose a class, before you begin your journey:"
+    echo ""
 }
 
-afplay ./sounds/Awakening.aiff &  INITMUSIC=$!
-init &  INITJOURNEY=$!
-wait $INITMUSIC
-wait $INITJOURNEY
+echo "Press 1 to skip the intro or type anything else to play it."
 
+skip=1
+read skipIntro
+
+if [[ $skip == $skipIntro ]]; then
+    echo "Choose your class, tarnished:"
+    sleep 1.5
+else
+    afplay ./sounds/Awakening.aiff &  INITMUSIC=$!
+    init &  INITJOURNEY=$!
+    wait $INITMUSIC
+    wait $INITJOURNEY
+fi
 
 echo "
-    0 - Wretch
-    1 - Warrior
-    2 - Prophet
-    3 - Hero
-    4 - Vagabond
-    5 - Prisoner
-    6 - Bandit
-    7 - Astrologer
-    8 - Confessor
-    9 - Samurai
-    "
+0 - Wretch
+1 - Warrior
+2 - Prophet
+3 - Hero
+4 - Vagabond
+5 - Prisoner
+6 - Bandit
+7 - Astrologer
+8 - Confessor
+9 - Samurai
+"
 
 read class
 
@@ -111,7 +132,7 @@ esac
 level=1
 maxHp=$hp
 
-sleep 1
+sleep 3
 
 echo "You have chosen the path of the $type.
 Your health points are $hp.
@@ -136,46 +157,55 @@ echo "."
 sleep 1
 echo "."
 sleep 1.5
+
 echo "You wake up from a deep sleep. It seems like centuries since you last opened your eyes."
 sleep 1.2
 
 echo "You gather your strength for a few minutes before setting off on your journey."
 sleep 1.2
 
-#Second Battle
-echo "You see a castle in the distance. Your heart tightens for a moment. But you know your journey have to take you there."
-sleep 4
+#First Level Up
+echo "You find a bonfire near the entrance to the castle. You decide to rest for a while before the upcoming fights."
+hp=$maxHp
+sleep 1
 
-echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
-
-soldier=62
-afplay ./sounds/initSword.aiff
-
-until [[ $soldier -le 1 && $hp -gt 1 || $soldier -gt 1 && $hp -le 1 ]]
+until [[ $level -gt 1 ]]
 do
-echo "Pick a number between 0 and 1 to attack. (0/1)"
+echo "Choose a stat to increase.
+0 - hp + 1
+1 - attack + 1
+2 - magic + 1
+"
 
-    swing=$(( $RANDOM % 2 ))
+read levelUp
 
-        
-    read tarnished
-
-    if [[ $swing == $tarnished ]]; then
-        echo "The soldier attack, but you manage to dodge the attack and plunge the blade into the soldier's flesh! Blood begins to gush from the wound!"
-        soldier=$(( soldier -= $attack ))
-        #echo "$soldier"
-    else
-        echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
-        hp=$((hp -= 4 ))
-        #echo "$hp"
-    fi
+case $levelUp in 
+    0)
+        hp=$(( hp+=1 ))
+        maxHp=$hp
+        level=$(( level+=1 ))
+        ;;
+    1)
+        attack=$(( attack+=1 ))
+        level=$(( level+=1 ))
+        ;;
+    2)
+        magic=$(( magic+=1 ))
+        level=$(( level+=1 ))
+        ;;
+esac
 done
 
-if [[ $soldier -le 0 ]]; then
-    echo "Soldier VANQUISHED! Congrats, fellow tarnished!"
-    echo "You have $hp hp left."
-    sleep 2
-elif [[ $hp -le 0 ]]; then
-    echo "You Died"
-    exit 2
-fi
+levelUp() {
+echo "You leveled up.
+Your level is now $level.
+Your health points are now $hp.
+Your attack power is now $attack.
+Your magic power is now $magic.
+"
+}
+
+afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+levelUp &  LEVELUP=$!
+wait $LEVELMUSIC
+wait $LEVELUP

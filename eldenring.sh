@@ -148,7 +148,7 @@ sleep 1
 echo "."
 sleep 1.5
 
-echo "You are now ready to travel along the Lands Between. Farwell, and good luck, tarnished..."
+echo "You are now ready to travel along The Lands Between. Farwell, and good luck, tarnished..."
 
 sleep 1
 echo "."
@@ -277,12 +277,19 @@ case $levelUp in
 esac
 done
 
+levelUp() {
 echo "You leveled up.
 Your level is now $level.
 Your health points are now $hp.
 Your attack power is now $attack.
 Your magic power is now $magic.
 "
+}
+
+afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+levelUp &  LEVELUP=$!
+wait $LEVELMUSIC
+wait $LEVELUP
 
 sleep 1
 
