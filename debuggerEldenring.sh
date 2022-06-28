@@ -11,10 +11,26 @@ init() {
     echo "."
     sleep 1.5
 
-    echo "Welcome, tarnished. You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet. Choose your class, and get ready to start your journey:"
+    echo "Welcome, tarnished. You're finally awake."
     sleep 5
+    echo "You are about to begin your journey in The Lands Betweens."
+    sleep 5
+    echo "This land, once home to humans and animals, is now in the hands of monsters and demigods, all struggling for control over this decayed world."
+    sleep 5
+    echo "Our beloved queen, Marika the Eternal, chosen by the Greater Will, is no more. The Elden Ring has been fragmented, and its power splitted among the new ruler of this world."
+    sleep 5
+    echo "It's now your duty to vanquish this false rulers, who are nothing but beasts thirsting for blood and power, and bring a new dawn to these barren lands."
+    sleep 5
+    echo "You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet."
+}
 
-    echo "
+afplay ./sounds/Awakening.aiff &  INITMUSIC=$!
+init &  INITJOURNEY=$!
+wait $INITMUSIC
+wait $INITJOURNEY
+
+
+echo "
     0 - Wretch
     1 - Warrior
     2 - Prophet
@@ -27,106 +43,99 @@ init() {
     9 - Samurai
     "
 
-    read class
+read class
 
-    case $class in
-        0)
-            type="Wretch"
-            hp=10
-            attack=10
-            magic=10
-            ;;
-        1)
-            type="Warrior"
-            hp=15
-            attack=15
-            magic=0
-            ;;
-        2)
-            type="Prophet"
-            hp=8
-            attack=11
-            magic=11
-            ;;
-        3)
-            type="Hero"
-            hp=12
-            attack=10
-            magic=8
-            ;;
-        4)
-            type="Vagabond"
-            hp=14
-            attack=11
-            magic=5
-            ;;
-        5)
-            type="Prisoner"
-            hp=14
-            attack=14
-            magic=2
-            ;;
-        6)
-            type="Bandit"
-            hp=10
-            attack=15
-            magic=5
-            ;;
-        7)
-            type="Astrologer"
-            hp=12
-            attack=7
-            magic=11
-            ;;
-        8)
-            type="Confessor"
-            hp=16
-            attack=8
-            magic=6
-            ;;
-        9)
-            type="Samurai"
-            hp=13
-            attack=17
-            magic=0
-            ;;
-    esac
+case $class in
+    0)
+        type="Wretch"
+        hp=10
+        attack=10
+        magic=10
+        ;;
+    1)
+        type="Warrior"
+        hp=15
+        attack=15
+        magic=0
+        ;;
+    2)
+        type="Prophet"
+        hp=8
+        attack=11
+        magic=11
+        ;;
+    3)
+        type="Hero"
+        hp=12
+        attack=10
+        magic=8
+        ;;
+    4)
+        type="Vagabond"
+        hp=14
+        attack=11
+        magic=5
+        ;;
+    5)
+        type="Prisoner"
+        hp=14
+        attack=14
+        magic=2
+        ;;
+    6)
+        type="Bandit"
+        hp=10
+        attack=15
+        magic=5
+        ;;
+    7)
+        type="Astrologer"
+        hp=12
+        attack=7
+        magic=11
+        ;;
+    8)
+        type="Confessor"
+        hp=16
+        attack=8
+        magic=6
+        ;;
+    9)
+        type="Samurai"
+        hp=13
+        attack=17
+        magic=0
+        ;;
+esac
 
-    level=1
-    maxHp=$hp
+level=1
+maxHp=$hp
 
-    sleep 1
+sleep 1
 
-    echo "You have chosen the path of the $type.
-    Your health points are $hp.
-    Your attack power is $attack.
-    Your magic power is $magic.
-    "
+echo "You have chosen the path of the $type.
+Your health points are $hp.
+Your attack power is $attack.
+Your magic power is $magic.
+"
 
-    sleep 1
-    echo "."
-    sleep 1
-    echo "."
-    sleep 1
-    echo "."
-    sleep 1.5
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1.5
 
-    echo "You are now ready to travel along the Lands Between. Farwell, and good luck, tarnished..."
+echo "You are now ready to travel along the Lands Between. Farwell, and good luck, tarnished..."
 
-    sleep 1
-    echo "."
-    sleep 1
-    echo "."
-    sleep 1
-    echo "."
-    sleep 1.5
-}
-
-afplay ./sounds/Awakening.aiff &  PIDIOS=$!
-init &  PIDMIX=$!
-wait $PIDIOS
-wait $PIDMIX
-
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1.5
 echo "You wake up from a deep sleep. It seems like centuries since you last opened your eyes."
 sleep 1.2
 

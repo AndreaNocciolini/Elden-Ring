@@ -2,54 +2,16 @@
 #Sounds
 #########################
 #The Journey Begin
-init() {
-    sleep 1
-    echo "."
-    sleep 1
-    echo "."
-    sleep 1
-    echo "."
-    sleep 1.5
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1.5
 
-    echo ""
-    echo "Welcome, tarnished. You're finally awake."
-    echo ""
-    sleep 5
-    echo ""
-    echo "You are about to begin your journey in The Lands Betweens."
-    echo ""
-    sleep 5
-    echo ""
-    echo "This land, once home to humans, is now in the hands of monsters and demigods, all struggling for control over this decayed world."
-    echo ""
-    sleep 5
-    echo ""
-    echo "Our beloved queen, Marika the Eternal, chosen by the Greater Will, is no more. The Elden Ring has been fragmented, and its power splitted among the new ruler of this world."
-    echo ""
-    sleep 5
-    echo ""
-    echo "It's now your duty to vanquish this false rulers, who are nothing but beasts thirsting for blood and power, and bring a new dawn to these barren lands."
-    echo ""
-    sleep 5
-    echo ""
-    echo "You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet. Choose a class, before you begin your journey:"
-    echo ""
-}
-
-echo "Press 1 to skip the intro or type anything else to play it."
-
-skip=1
-read skipIntro
-
-if [[ $skip == $skipIntro ]]; then
-    echo "Choose your class, tarnished:"
-    sleep 1.5
-else
-    afplay ./sounds/Awakening.aiff &  INITMUSIC=$!
-    init &  INITJOURNEY=$!
-    wait $INITMUSIC
-    wait $INITJOURNEY
-fi
+echo "Welcome, tarnished. You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet. Choose your class, and get ready to start your journey:"
+sleep 7
 
 echo "
 0 - Wretch
