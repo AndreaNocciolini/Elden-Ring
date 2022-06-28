@@ -46,6 +46,27 @@ echo "Your attack power is now $attack."
 echo "Your magic power is now $magic."
 }
 
+#Margit Cutscene
+margitEntrance() {
+    sleep 5
+    echo "Margit: 'Foul Tarnished,'"
+    sleep 4
+    echo "Margit: 'In search of the Elden Ring.'"
+    sleep 5
+    echo "Margit: 'Embolden by the flame of ambition.'"
+    sleep 12
+    echo "The Fell Omen prepare to jump from the tower."
+    sleep 2
+    echo "Margit: 'Hrah!'"
+    sleep 2
+    echo "He lands in front of you, kicking dust and ash off the ground."
+    sleep 9
+    echo "Margit: 'Someone must extinguish thy flame.'"
+    sleep 6
+    echo "Margit: 'Let it be Margit the Fell!'"
+    sleep 3
+}
+
 #The Journey Begin
 echo "Press 1 to skip the intro or type anything else to play it."
 
@@ -303,9 +324,16 @@ sleep 1
 
 
 #Margit Battle
-echo "You enter the castle. A demigod appear as soon you step into the area. It's Margit, the Fell Omen."
-sleep 1
+echo "You enter the castle. You feel a presence on the nearby tower. It's Margit, the Fell Omen."
+sleep 2
+
+afplay ./sounds/margitIntro.aiff &  INITMARGIT=$!
+margitEntrance &  DIALOGUEMARGIT=$!
+wait $INITMARGIT
+wait $DIALOGUEMARGIT
+
 echo "You cross your eyes. Margit looks at you, from top to bottom. He grins. You draw your sword, preparing for the worst."
+sleep 2
 
 margit=120
 afplay ./sounds/initSword.aiff
@@ -327,7 +355,8 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
 
     elif [[ $((swing - tarnished)) -eq 0 ]]; then
         echo "Margit charge with is wand, but you manage to parry him! You hit him with a powerful counterattack! He utters a pained cry and quickly distances himself!"
-        margit=$ (( margit -= $attack*2 ))
+        criticalHit=$attack*2
+        margit=$(( margit -= $criticalHit ))
         # echo "margit $margit"
         # echo "hp $hp"
 
@@ -341,7 +370,7 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
         hp=$(( hp - 1 ))
         # echo "margit $margit"
         # echo "hp $hp"
-        
+
     else
         echo "Margit charge at you. You try to dodge, but he manage to hit you with a powerful blow! You fly to the ground, feeling the blow heavily"
         hp=$(( hp - 4 ))

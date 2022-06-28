@@ -46,6 +46,27 @@ echo "Your attack power is now $attack."
 echo "Your magic power is now $magic."
 }
 
+#Margit Cutscene
+margitEntrance() {
+    sleep 5
+    echo "Margit: 'Foul Tarnished,'"
+    sleep 4
+    echo "Margit: 'In search of the Elden Ring.'"
+    sleep 5
+    echo "Margit: 'Embolden by the flame of ambition.'"
+    sleep 12
+    echo "The Fell Omen prepare to jump from the tower."
+    sleep 1
+    echo "Margit: 'Hrah!'"
+    sleep 2
+    echo "He lands in front of you, kicking dust and ash off the ground."
+    sleep 10
+    echo "Margit: 'Someone must extinguish thy flame.'"
+    sleep 7
+    echo "Margit: 'Let it be Margit the Fell!"
+    sleep 3
+}
+
 #The Journey Begin
 echo "Press 1 to skip the intro or type anything else to play it."
 
@@ -176,9 +197,16 @@ echo "You gather your strength for a few minutes before setting off on your jour
 sleep 1.2
 
 #Margit Battle
-echo "You enter the castle. A demigod appear as soon you step into the area. It's Margit, the Fell Omen."
-sleep 1
+echo "You enter the castle. You feel a presence on the nearby tower. It's Margit, the Fell Omen."
+sleep 2
+
+afplay ./sounds/margitIntro.aiff &  INITMARGIT=$!
+margitEntrance &  DIALOGUEMARGIT=$!
+wait $INITMARGIT
+wait $DIALOGUEMARGIT
+
 echo "You cross your eyes. Margit looks at you, from top to bottom. He grins. You draw your sword, preparing for the worst."
+sleep 2
 
 margit=120
 afplay ./sounds/initSword.aiff
@@ -195,29 +223,32 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
     if [[ $swing == $tarnished ]]; then
         echo "Margit attack, but you manage to parry his attack and lacerate his flesh with a blow! He fell the blow and back away!"
         margit=$(( margit -= $attack ))
-        echo "margit $margit"
-        echo "hp $hp"
+        # echo "margit $margit"
+        # echo "hp $hp"
 
-    elif [[ $((swing - tarnished)) -eq 2 ]]; then
+    elif [[ $((swing - tarnished)) -eq 0 ]]; then
         echo "Margit charge with is wand, but you manage to parry him! You hit him with a powerful counterattack! He utters a pained cry and quickly distances himself!"
-        criticalHit=$(( $attack * 2 ))
+        criticalHit=$(( $attack*2 ))
         margit=$(( margit -= $criticalHit ))
-        echo "margit $margit"
-        echo "hp $hp"
+        # echo "margit $margit"
+        # echo "hp $hp"
+
     elif [[ $((swing - tarnished)) -eq 1 ]]; then
         echo "Margit launches swords of light at you, but you manage to dodge them with agility! You get up and prepare for a counterattack!"
-        echo "margit $margit"
-        echo "hp $hp"
+        # echo "margit $margit"
+        # echo "hp $hp"
+
     elif [[ $(( swing + tarnished )) -gt 8 || $(( swing - tarnished )) -lt 0 ]]; then
         echo "Margit hits the ground hard with his hammer! You equal the blow, but the force unbalances you and makes you fall to the ground! As you get up, Margit manages to smack you!"
         hp=$(( hp - 1 ))
-        echo "margit $margit"
-        echo "hp $hp"
+        # echo "margit $margit"
+        # echo "hp $hp"
+
     else
         echo "Margit charge at you. You try to dodge, but he manage to hit you with a powerful blow! You fly to the ground, feeling the blow heavily"
         hp=$(( hp - 4 ))
-        echo "margit $margit"
-        echo "hp $hp"
+        # echo "margit $margit"
+        # echo "hp $hp"
     fi
 done
 
