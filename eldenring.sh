@@ -1,7 +1,8 @@
 #afplay /System/Library/Sounds/Funk.aiff --> make a sound
 #Sounds
 #########################
-#The Journey Begin
+#Functions
+#Init Journey
 init() {
     sleep 1
     echo "."
@@ -36,6 +37,16 @@ init() {
     echo ""
 }
 
+#Level Up
+levelUp() {
+echo "You leveled up."
+echo "Your level is now $level."
+echo "Your health points are now $hp."
+echo "Your attack power is now $attack."
+echo "Your magic power is now $magic."
+}
+
+#The Journey Begin
 echo "Press 1 to skip the intro or type anything else to play it."
 
 skip=1
@@ -192,7 +203,7 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
         #echo "$beast"
     else
         echo "You try to dodge, but the beast manages to hit you! You feel the blow and back away, ready to attack again!"
-        hp=$((hp -= 3 ))
+        hp=$((hp -= 1 ))
         afplay ./sounds/beast_1.aiff
         #echo "$hp"
     fi
@@ -228,10 +239,12 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
     if [[ $swing == $tarnished ]]; then
         echo "The soldier attack, but you manage to dodge the attack and plunge the blade into the soldier's flesh! Blood begins to gush from the wound!"
         soldier=$(( soldier -= $attack ))
+        afplay ./sounds/hitSword_3.aiff
         #echo "$soldier"
     else
         echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
-        hp=$((hp -= 4 ))
+        hp=$((hp -= 2 ))
+        afplay ./sounds/hitSword_4.aiff
         #echo "$hp"
     fi
 done
@@ -277,15 +290,6 @@ case $levelUp in
 esac
 done
 
-levelUp() {
-echo "You leveled up.
-Your level is now $level.
-Your health points are now $hp.
-Your attack power is now $attack.
-Your magic power is now $magic.
-"
-}
-
 afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
@@ -299,15 +303,101 @@ sleep 1
 
 
 #Margit Battle
-echo "You enter the castle. A Boss appear as soon you step into the area. It's Margit, the fell omen. Pick a number between 0 and 9 to defeat him!(0/1/.../9)"
+echo "You enter the castle. A demigod appear as soon you step into the area. It's Margit, the Fell Omen."
+sleep 1
+echo "You cross your eyes. Margit looks at you, from top to bottom. He grins. You draw your sword, preparing for the worst."
 
-read tarnished
+margit=120
+afplay ./sounds/initSword.aiff
 
-margit=$(( $RANDOM % 10 ))
+until [[ $margit -le 1 && $hp -gt 1 || $margit -gt 1 && $hp -le 1 ]]
+do
+echo "Pick a number between 0 and 4 to attack. (0-4)"
 
-if [[ $margit == $tarnished ]]; then
-    echo "After a grueling battle, Margit falls to the ground defeated, sinking into a pool soaked in his own blood. Congrats, fellow tarnished!"
-else
+    swing=$(( $RANDOM % 5 ))
+
+        
+    read tarnished
+
+    if [[ $swing == $tarnished ]]; then
+        echo "Margit attack, but you manage to parry his attack and lacerate his flesh with a blow! He fell the blow and back away!"
+        margit=$(( margit -= $attack ))
+        # echo "margit $margit"
+        # echo "hp $hp"
+
+    elif [[ $((swing - tarnished)) -eq 0 ]]; then
+        echo "Margit charge with is wand, but you manage to parry him! You hit him with a powerful counterattack! He utters a pained cry and quickly distances himself!"
+        margit=$ (( margit -= $attack*2 ))
+        # echo "margit $margit"
+        # echo "hp $hp"
+
+    elif [[ $((swing - tarnished)) -eq 1 ]]; then
+        echo "Margit launches swords of light at you, but you manage to dodge them with agility! You get up and prepare for a counterattack!"
+        # echo "margit $margit"
+        # echo "hp $hp"
+
+    elif [[ $(( swing + tarnished )) -gt 8 || $(( swing - tarnished )) -lt 0 ]]; then
+        echo "Margit hits the ground hard with his hammer! You equal the blow, but the force unbalances you and makes you fall to the ground! As you get up, Margit manages to smack you!"
+        hp=$(( hp - 1 ))
+        # echo "margit $margit"
+        # echo "hp $hp"
+        
+    else
+        echo "Margit charge at you. You try to dodge, but he manage to hit you with a powerful blow! You fly to the ground, feeling the blow heavily"
+        hp=$(( hp - 4 ))
+        # echo "margit $margit"
+        # echo "hp $hp"
+    fi
+done
+
+if [[ $margit -le 0 ]]; then
+    echo "Margit VANQUISHED! You manage to defeat a demigod! Congrats, fellow tarnished!"
+    echo "You have $hp hp left."
+    sleep 2
+elif [[ $hp -le 0 ]]; then
     echo "You Died"
     exit 2
 fi
+
+#Second Level Up -- After Margit Battle
+echo "You find a bonfire where the fall omen once stood. You decide to rest for a while before the upcoming fights."
+hp=$maxHp
+sleep 1
+
+until [[ $level -gt 2 ]]
+do
+echo "You think back to the battle just faced. Defeating such a strong enemy charges you with determination. Choose a stat to increase.
+0 - hp + 3
+1 - attack + 3
+2 - magic + 3
+"
+
+read levelUp
+
+case $levelUp in 
+    0)
+        hp=$(( hp+=3 ))
+        maxHp=$hp
+        level=$(( level+=1 ))
+        ;;
+    1)
+        attack=$(( attack+=3 ))
+        level=$(( level+=1 ))
+        ;;
+    2)
+        magic=$(( magic+=3 ))
+        level=$(( level+=1 ))
+        ;;
+esac
+done
+
+afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+levelUp &  LEVELUP=$!
+wait $LEVELMUSIC
+wait $LEVELUP
+
+sleep 1
+
+echo "You brace yourself, and leave for your journey again..."
+
+sleep 1
