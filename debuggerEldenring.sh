@@ -1,3 +1,7 @@
+#afplay /System/Library/Sounds/Funk.aiff --> make a sound
+#Sounds
+#########################
+#The Journey Begin
 sleep 1
 echo "."
 sleep 1
@@ -30,82 +34,65 @@ case $class in
         hp=10
         attack=10
         magic=10
-        level=1
-        maxHp=$hp
         ;;
     1)
         type="Warrior"
         hp=15
         attack=15
         magic=0
-        level=1
-        maxHp=$hp
         ;;
     2)
         type="Prophet"
         hp=8
         attack=11
         magic=11
-        level=1
-        maxHp=$hp
         ;;
     3)
         type="Hero"
         hp=12
         attack=10
         magic=8
-        level=1
-        maxHp=$hp
         ;;
     4)
         type="Vagabond"
         hp=14
         attack=11
         magic=5
-        level=1
-        maxHp=$hp
         ;;
     5)
         type="Prisoner"
         hp=14
         attack=14
         magic=2
-        level=1
-        maxHp=$hp
         ;;
     6)
         type="Bandit"
         hp=10
         attack=15
         magic=5
-        level=1
-        maxHp=$hp
         ;;
     7)
         type="Astrologer"
         hp=12
         attack=7
         magic=11
-        level=1
-        maxHp=$hp
         ;;
     8)
         type="Confessor"
         hp=16
         attack=8
         magic=6
-        level=1
-        maxHp=$hp
         ;;
     9)
         type="Samurai"
         hp=13
         attack=17
         magic=0
-        level=1
-        maxHp=$hp
         ;;
 esac
+
+level=1
+maxHp=$hp
 
 sleep 1
 
@@ -139,41 +126,44 @@ sleep 1.2
 echo "You gather your strength for a few minutes before setting off on your journey."
 sleep 1.2
 
-#First Level Up
-echo "You find a bonfire near the entrance to the castle. You decide to rest for a while before the upcoming fights."
-hp=$maxHp
-sleep 1
+#First Battle
+echo "Your first enemy approaches. It's a filthy giant rat. Prepare to battle."
 
-until [[ $level -gt 1 ]]
+beast=45
+afplay ./sounds/initSword.aiff
+
+until [[ $beast -le 1 && $hp -gt 1 || $beast -gt 1 && $hp -le 1 ]]
 do
-echo "Choose a stat to increase.
-0 - hp + 1
-1 - attack + 1
-2 - magic + 1
-"
+echo "Pick a number between 0 and 1 to attack. (0/1)"
 
-read levelUp
+    swing=$(( $RANDOM % 2 ))
 
-case $levelUp in 
-    0)
-        hp=$(( hp+=1 ))
-        maxHp=$hp
-        level=$(( level+=1 ))
-        ;;
-    1)
-        attack=$(( attack+=1 ))
-        level=$(( level+=1 ))
-        ;;
-    2)
-        magic=$(( magic+=1 ))
-        level=$(( level+=1 ))
-        ;;
-esac
+        
+    read tarnished
+
+    if [[ $swing == $tarnished ]]; then
+        echo "You tear the flesh of the beast with a slash! Blood begins to gush from the wound!"
+        afplay ./sounds/hitSword_1.aiff
+        beast=$(( beast -= $attack ))
+        if [[ $swing -eq 1 ]]; then
+            afplay ./sounds/hitSword_1.aiff
+        else
+            afplay ./sounds/hitSword_2.aiff
+        fi
+        #echo "$beast"
+    else
+        echo "You try to dodge, but the beast manages to hit you! You feel the blow and back away, ready to attack again!"
+        hp=$((hp -= 3 ))
+        afplay ./sounds/beast_1.aiff
+        #echo "$hp"
+    fi
 done
 
-echo "You leveled up.
-Your level is now $level.
-Your health points are now $hp.
-Your attack power is now $attack.
-Your magic power is now $magic.
-"
+if [[ $beast -le 0 ]]; then
+    echo "Beast VANQUISHED! Congrats, fellow tarnished!"
+    echo "You have $hp hp left."
+    sleep 2
+elif [[ $hp -le 0 ]]; then
+    echo "You Died"
+    exit 2
+fi

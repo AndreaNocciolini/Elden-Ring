@@ -1,6 +1,7 @@
 #afplay /System/Library/Sounds/Funk.aiff --> make a sound
-afplay ./sword.aiff
-
+#Sounds
+#########################
+#The Journey Begin
 sleep 1
 echo "."
 sleep 1
@@ -129,7 +130,7 @@ sleep 1.2
 echo "Your first enemy approaches. It's a filthy giant rat. Prepare to battle."
 
 beast=45
-
+afplay ./sounds/initSword.aiff
 
 until [[ $beast -le 1 && $hp -gt 1 || $beast -gt 1 && $hp -le 1 ]]
 do
@@ -142,11 +143,17 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
 
     if [[ $swing == $tarnished ]]; then
         echo "You tear the flesh of the beast with a slash! Blood begins to gush from the wound!"
+        afplay ./sounds/hitSword_1.aiff
         beast=$(( beast -= $attack ))
+        if [[ $swing -eq 1 ]]; then
+            afplay ./sounds/hitSword_1.aiff
+        else
+            afplay ./sounds/hitSword_2.aiff
         #echo "$beast"
     else
         echo "You try to dodge, but the beast manages to hit you! You feel the blow and back away, ready to attack again!"
         hp=$((hp -= 3 ))
+        afplay ./sounds/beast_1.aiff
         #echo "$hp"
     fi
 done
