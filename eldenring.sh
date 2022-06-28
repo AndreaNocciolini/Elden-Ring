@@ -11,7 +11,7 @@ echo "."
 sleep 1.5
 
 echo "Welcome, tarnished. You seem to have the potential to face the challenges that will arise before you, but it seems that you haven't chosen your path yet. Choose your class, and get ready to start your journey:"
-sleep 5
+sleep 7
 
 echo "
 0 - Wretch
@@ -94,7 +94,7 @@ esac
 level=1
 maxHp=$hp
 
-sleep 1
+sleep 3
 
 echo "You have chosen the path of the $type.
 Your health points are $hp.
@@ -128,6 +128,7 @@ sleep 1.2
 
 #First Battle
 echo "Your first enemy approaches. It's a filthy giant rat. Prepare to battle."
+sleep 5
 
 beast=45
 afplay ./sounds/initSword.aiff
@@ -149,6 +150,7 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
             afplay ./sounds/hitSword_1.aiff
         else
             afplay ./sounds/hitSword_2.aiff
+        fi
         #echo "$beast"
     else
         echo "You try to dodge, but the beast manages to hit you! You feel the blow and back away, ready to attack again!"
@@ -161,15 +163,15 @@ done
 if [[ $beast -le 0 ]]; then
     echo "Beast VANQUISHED! Congrats, fellow tarnished!"
     echo "You have $hp hp left."
-    sleep 2
+    sleep 5
 elif [[ $hp -le 0 ]]; then
     echo "You Died"
-    exit 2
+    exit 3.5
 fi
 
 #Second Battle
 echo "You see a castle in the distance. Your heart tightens for a moment. But you know your journey have to take you there."
-sleep 1
+sleep 4
 
 echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
 
