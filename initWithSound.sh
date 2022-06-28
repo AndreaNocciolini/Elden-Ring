@@ -1,7 +1,10 @@
-#afplay /System/Library/Sounds/Funk.aiff --> make a sound
-#Sounds
-#########################
-#The Journey Begin
+if [[ $OSTYPE == "macos" ]]; then
+    playsound=afplay 2> /dev/null
+else
+    playsound=start 2> /dev/null
+fi
+
+
 init() {
     sleep 1
     echo "."
@@ -122,7 +125,7 @@ init() {
     sleep 1.5
 }
 
-afplay ./sounds/Awakening.aiff &  PIDIOS=$!
+$playsound ./sounds/Awakening.aiff &  PIDIOS=$!
 init &  PIDMIX=$!
 wait $PIDIOS
 wait $PIDMIX

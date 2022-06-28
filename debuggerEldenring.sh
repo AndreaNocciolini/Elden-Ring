@@ -1,6 +1,9 @@
-#afplay /System/Library/Sounds/Funk.aiff --> make a sound
 #Sounds
-#########################
+if [[ $OSTYPE == "macos" ]]; then
+    playsound=afplay 2> /dev/null
+else
+    playsound=start 2> /dev/null
+fi
 #Functions
 #Init Journey
 init() {
@@ -56,14 +59,14 @@ margitEntrance() {
     echo "Margit: 'Embolden by the flame of ambition.'"
     sleep 12
     echo "The Fell Omen prepare to jump from the tower."
-    sleep 1
+    sleep 2
     echo "Margit: 'Hrah!'"
     sleep 2
     echo "He lands in front of you, kicking dust and ash off the ground."
-    sleep 10
+    sleep 9
     echo "Margit: 'Someone must extinguish thy flame.'"
-    sleep 7
-    echo "Margit: 'Let it be Margit the Fell!"
+    sleep 6
+    echo "Margit: 'Let it be Margit the Fell!'"
     sleep 3
 }
 
@@ -75,9 +78,9 @@ read skipIntro
 
 if [[ $skip == $skipIntro ]]; then
     echo "Choose your class, tarnished:"
-    sleep 1
+    sleep 1.5
 else
-    afplay ./sounds/Awakening.aiff &  INITMUSIC=$!
+    $playsound ./sounds/Awakening.aiff &  INITMUSIC=$!
     init &  INITJOURNEY=$!
     wait $INITMUSIC
     wait $INITJOURNEY
@@ -200,7 +203,7 @@ sleep 1.2
 echo "You enter the castle. You feel a presence on the nearby tower. It's Margit, the Fell Omen."
 sleep 2
 
-afplay ./sounds/margitIntro.aiff &  INITMARGIT=$!
+$playsound ./sounds/margitIntro.aiff &  INITMARGIT=$!
 margitEntrance &  DIALOGUEMARGIT=$!
 wait $INITMARGIT
 wait $DIALOGUEMARGIT
@@ -209,7 +212,7 @@ echo "You cross your eyes. Margit looks at you, from top to bottom. He grins. Yo
 sleep 2
 
 margit=120
-afplay ./sounds/initSword.aiff
+$playsound ./sounds/initSword.aiff
 
 until [[ $margit -le 1 && $hp -gt 1 || $margit -gt 1 && $hp -le 1 ]]
 do
@@ -228,7 +231,7 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
 
     elif [[ $((swing - tarnished)) -eq 0 ]]; then
         echo "Margit charge with is wand, but you manage to parry him! You hit him with a powerful counterattack! He utters a pained cry and quickly distances himself!"
-        criticalHit=$(( $attack*2 ))
+        criticalHit=$attack*2
         margit=$(( margit -= $criticalHit ))
         # echo "margit $margit"
         # echo "hp $hp"
@@ -293,7 +296,7 @@ case $levelUp in
 esac
 done
 
-afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+$playsound ./sounds/levelUp.aiff &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
 wait $LEVELUP

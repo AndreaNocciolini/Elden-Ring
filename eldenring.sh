@@ -1,6 +1,9 @@
-#afplay /System/Library/Sounds/Funk.aiff --> make a sound
 #Sounds
-#########################
+if [[ $OSTYPE == "macos" ]]; then
+    playsound=afplay 2> /dev/null
+else
+    playsound=start 2> /dev/null
+fi
 #Functions
 #Init Journey
 init() {
@@ -77,7 +80,7 @@ if [[ $skip == $skipIntro ]]; then
     echo "Choose your class, tarnished:"
     sleep 1.5
 else
-    afplay ./sounds/Awakening.aiff &  INITMUSIC=$!
+    $playsound ./sounds/Awakening.aiff &  INITMUSIC=$!
     init &  INITJOURNEY=$!
     wait $INITMUSIC
     wait $INITJOURNEY
@@ -201,7 +204,7 @@ echo "Your first enemy approaches. It's a filthy giant rat. Prepare to battle."
 sleep 5
 
 beast=45
-afplay ./sounds/initSword.aiff
+$playsound ./sounds/initSword.aiff
 
 until [[ $beast -le 1 && $hp -gt 1 || $beast -gt 1 && $hp -le 1 ]]
 do
@@ -214,18 +217,18 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
 
     if [[ $swing == $tarnished ]]; then
         echo "You tear the flesh of the beast with a slash! Blood begins to gush from the wound!"
-        afplay ./sounds/hitSword_1.aiff
+        $playsound ./sounds/hitSword_1.aiff
         beast=$(( beast -= $attack ))
         if [[ $swing -eq 1 ]]; then
-            afplay ./sounds/hitSword_1.aiff
+            $playsound ./sounds/hitSword_1.aiff
         else
-            afplay ./sounds/hitSword_2.aiff
+            $playsound ./sounds/hitSword_2.aiff
         fi
         #echo "$beast"
     else
         echo "You try to dodge, but the beast manages to hit you! You feel the blow and back away, ready to attack again!"
         hp=$((hp -= 1 ))
-        afplay ./sounds/beast_1.aiff
+        $playsound ./sounds/beast_1.aiff
         #echo "$hp"
     fi
 done
@@ -246,7 +249,7 @@ sleep 4
 echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
 
 soldier=62
-afplay ./sounds/initSword.aiff
+$playsound ./sounds/initSword.aiff
 
 until [[ $soldier -le 1 && $hp -gt 1 || $soldier -gt 1 && $hp -le 1 ]]
 do
@@ -260,12 +263,12 @@ echo "Pick a number between 0 and 1 to attack. (0/1)"
     if [[ $swing == $tarnished ]]; then
         echo "The soldier attack, but you manage to dodge the attack and plunge the blade into the soldier's flesh! Blood begins to gush from the wound!"
         soldier=$(( soldier -= $attack ))
-        afplay ./sounds/hitSword_3.aiff
+        $playsound ./sounds/hitSword_3.aiff
         #echo "$soldier"
     else
         echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
         hp=$((hp -= 2 ))
-        afplay ./sounds/hitSword_4.aiff
+        $playsound ./sounds/hitSword_4.aiff
         #echo "$hp"
     fi
 done
@@ -311,7 +314,7 @@ case $levelUp in
 esac
 done
 
-afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+$playsound ./sounds/levelUp.aiff &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
 wait $LEVELUP
@@ -327,7 +330,7 @@ sleep 1
 echo "You enter the castle. You feel a presence on the nearby tower. It's Margit, the Fell Omen."
 sleep 2
 
-afplay ./sounds/margitIntro.aiff &  INITMARGIT=$!
+$playsound ./sounds/margitIntro.aiff &  INITMARGIT=$!
 margitEntrance &  DIALOGUEMARGIT=$!
 wait $INITMARGIT
 wait $DIALOGUEMARGIT
@@ -336,7 +339,7 @@ echo "You cross your eyes. Margit looks at you, from top to bottom. He grins. Yo
 sleep 2
 
 margit=120
-afplay ./sounds/initSword.aiff
+$playsound ./sounds/initSword.aiff
 
 until [[ $margit -le 1 && $hp -gt 1 || $margit -gt 1 && $hp -le 1 ]]
 do
@@ -420,7 +423,7 @@ case $levelUp in
 esac
 done
 
-afplay ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+$playsound ./sounds/levelUp.aiff &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
 wait $LEVELUP
