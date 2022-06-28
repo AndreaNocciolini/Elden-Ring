@@ -236,7 +236,7 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
         # echo "margit $margit"
         # echo "hp $hp"
 
-    elif [[ $((swing - tarnished)) -eq 1 ]]; then
+    elif [[ $((swing - tarnished)) -eq 2 ]]; then
         echo "Margit launches swords of light at you, but you manage to dodge them with agility! You get up and prepare for a counterattack!"
         # echo "margit $margit"
         # echo "hp $hp"

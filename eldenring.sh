@@ -356,7 +356,7 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
         # echo "margit $margit"
         # echo "hp $hp"
 
-    elif [[ $((swing - tarnished)) -eq 0 ]]; then
+    elif [[ $((swing - tarnished)) -eq 2 ]]; then
         echo "Margit charge with is wand, but you manage to parry him! You hit him with a powerful counterattack! He utters a pained cry and quickly distances himself!"
         criticalHit=$attack*2
         margit=$(( margit -= $criticalHit ))
