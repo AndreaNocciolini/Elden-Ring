@@ -1,13 +1,16 @@
 #Sounds
-if [[ $OSTYPE == "macos" ]]; then
-    playsound=afplay 2> /dev/null
-else
-    playsound=start 2> /dev/null
-fi
+# if [[ $OSTYPE == "macos" ]]; then
+#     playsound=afplay 2> /dev/null
+# else
+#     playsound=start 2> /dev/null
+# fi
+playsound=afplay 2> /dev/null
+
 #Functions
 #Init Journey
 init() {
     sleep 1
+    
     echo "."
     sleep 1
     echo "."
@@ -80,7 +83,7 @@ if [[ $skip == $skipIntro ]]; then
     echo "Choose your class, tarnished:"
     sleep 1.5
 else
-    $playsound ./sounds/Awakening.aiff &  INITMUSIC=$!
+    $playsound ./sounds/Awakening.aiff 2> /dev/null &  INITMUSIC=$!
     init &  INITJOURNEY=$!
     wait $INITMUSIC
     wait $INITJOURNEY
@@ -193,30 +196,39 @@ sleep 1
 echo "."
 sleep 1.5
 
+echo ""
 echo "You wake up from a deep sleep. It seems like centuries since you last opened your eyes."
+echo ""
 sleep 1.2
 
+echo ""
 echo "You gather your strength for a few minutes before setting off on your journey."
+echo ""
 sleep 1.2
 
 #Margit Battle
+echo ""
 echo "You enter the castle. You feel a presence on the nearby tower. It's Margit, the Fell Omen."
-sleep 2
+echo ""
+sleep 2.5
 
-$playsound ./sounds/margitIntro.aiff &  INITMARGIT=$!
+$playsound ./sounds/margitIntro.aiff 2> /dev/null &  INITMARGIT=$!
 margitEntrance &  DIALOGUEMARGIT=$!
 wait $INITMARGIT
 wait $DIALOGUEMARGIT
 
+echo ""
 echo "You cross your eyes. Margit looks at you, from top to bottom. He grins. You draw your sword, preparing for the worst."
+echo ""
 sleep 2
 
 margit=120
-$playsound ./sounds/initSword.aiff
+$playsound ./sounds/initSword.aiff 2> /dev/null
 
 until [[ $margit -le 1 && $hp -gt 1 || $margit -gt 1 && $hp -le 1 ]]
-do
-echo "Pick a number between 0 and 4 to attack. (0-4)"
+do  
+    echo ""
+    echo "Pick a number between 0 and 4 to attack. (0-4)"
 
     swing=4
 
@@ -224,85 +236,132 @@ echo "Pick a number between 0 and 4 to attack. (0-4)"
     read tarnished
 
     if [[ $swing == $tarnished ]]; then
+        echo ""
+        echo -e "\e[1;32mYOU HIT MARGIT! \e[0m"
         echo "Margit attack, but you manage to parry his attack and lacerate his flesh with a blow! He fell the blow and back away!"
+        echo ""
+
         margit=$(( margit -= $attack ))
+        sleep 1
         # echo "margit $margit"
         # echo "hp $hp"
 
     elif [[ $((swing - tarnished)) -eq 2 ]]; then
+        echo ""
+        echo -e "\e[1;35mYOU HIT MARGIT IN ITS WEAK SPOT! \e[0m"
         echo "Margit charge with is wand, but you manage to parry him! You hit him with a powerful counterattack! He utters a pained cry and quickly distances himself!"
+        echo ""
+
         criticalHit=$attack*2
         margit=$(( margit -= $criticalHit ))
+        sleep 1
+
         # echo "margit $margit"
         # echo "hp $hp"
 
     elif [[ $((swing - tarnished)) -eq 1 ]]; then
+        echo ""
+        echo -e "\e[1;33mYOU DODGE THE ATTACK! \e[0m"
         echo "Margit launches swords of light at you, but you manage to dodge them with agility! You get up and prepare for a counterattack!"
+        echo ""
+        sleep 1
+
         # echo "margit $margit"
         # echo "hp $hp"
 
     elif [[ $(( swing + tarnished )) -gt 8 || $(( swing - tarnished )) -lt 0 ]]; then
+        echo ""
+        echo -e "\e[1;31mYOU TAKE SOME DAMAGE! \e[0m"
         echo "Margit hits the ground hard with his hammer! You equal the blow, but the force unbalances you and makes you fall to the ground! As you get up, Margit manages to smack you!"
+        echo ""
+
         hp=$(( hp - 1 ))
+        sleep 1
+
         # echo "margit $margit"
         # echo "hp $hp"
 
     else
+        echo ""
+        echo -e "\e[1;31mMARGIT HITS YOU! \e[0m"
         echo "Margit charge at you. You try to dodge, but he manage to hit you with a powerful blow! You fly to the ground, feeling the blow heavily"
+        echo ""
+
         hp=$(( hp - 4 ))
+        sleep 1
+
         # echo "margit $margit"
         # echo "hp $hp"
     fi
 done
 
-if [[ $margit -le 0 ]]; then
-    echo "Margit VANQUISHED! You manage to defeat a demigod! Congrats, fellow tarnished!"
-    echo "You have $hp hp left."
-    sleep 2
-elif [[ $hp -le 0 ]]; then
-    echo "You Died"
-    exit 2
-fi
+checkBattleOutcome=0
+until [[ $checkBattleOutcome -eq 1 ]]
+do
+    if [[ $margit -le 0 ]]; then
+        echo ""
+        echo "Margit VANQUISHED! You manage to defeat a demigod! Congrats, fellow tarnished!"
+        echo "You have $hp hp left."
+        echo ""
+
+        checkBattleOutcome=$(( checkBattleOutcome+=1 ))
+        sleep 2
+
+    elif [[ $hp -le 0 ]]; then
+        echo "You Died"
+        exit 3.5
+    fi
+done
 
 #Second Level Up -- After Margit Battle
+echo ""
 echo "You find a bonfire where the fall omen once stood. You decide to rest for a while before the upcoming fights."
+echo ""
 hp=$maxHp
 sleep 1
 
 until [[ $level -gt 2 ]]
 do
-echo "You think back to the battle just faced. Defeating such a strong enemy charges you with determination. Choose a stat to increase.
+    echo ""
+    echo "You think back to the battle just faced. Defeating such a strong enemy charges you with determination. Choose a stat to increase.
 0 - hp + 3
 1 - attack + 3
 2 - magic + 3
 "
 
-read levelUp
+    read levelUp
 
-case $levelUp in 
-    0)
-        hp=$(( hp+=3 ))
-        maxHp=$hp
-        level=$(( level+=1 ))
-        ;;
-    1)
-        attack=$(( attack+=3 ))
-        level=$(( level+=1 ))
-        ;;
-    2)
-        magic=$(( magic+=3 ))
-        level=$(( level+=1 ))
-        ;;
+    case $levelUp in 
+        0)
+            hp=$(( hp+=3 ))
+            maxHp=$hp
+            level=$(( level+=1 ))
+            ;;
+        1)
+            attack=$(( attack+=3 ))
+            level=$(( level+=1 ))
+            ;;
+        2)
+            magic=$(( magic+=3 ))
+            level=$(( level+=1 ))
+            ;;
 esac
 done
 
-$playsound ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+$playsound ./sounds/levelUp.aiff 2> /dev/null &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
 wait $LEVELUP
-
 sleep 1
 
-echo "You brace yourself, and leave for your journey again..."
+echo "."
+sleep 1
+echo "."
+sleep 1
+echo "."
+sleep 1.5
 
+echo ""
+echo "You brace yourself, and leave for your journey again..."
+echo ""
 sleep 1

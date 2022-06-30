@@ -18,7 +18,7 @@ margitEntrance() {
     sleep 3
 }
 
-afplay ./sounds/margitIntro.aiff &  INITMARGIT=$!
+start ./sounds/margitIntro.aiff &  INITMARGIT=$!
     margitEntrance &  DIALOGUEMARGIT=$!
     wait $INITMARGIT
     wait $DIALOGUEMARGIT
