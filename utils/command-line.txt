@@ -1,0 +1,10 @@
+In case of error like:
+
+------------------------------------------------------------------------
+|   eldenring.sh: line 8: $'\r': command not found                     |
+|   eldenring.sh: line 11: syntax error near unexpected token `$'{\r'' |
+|   'ldenring.sh: line 11: `init() {                                   |
+------------------------------------------------------------------------
+
+run the command line (from this folder):
+sed -i 's/\r//' eldenring.sh

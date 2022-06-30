@@ -199,6 +199,133 @@ sleep 1.2
 echo "You gather your strength for a few minutes before setting off on your journey."
 sleep 1.2
 
+#First Battle
+echo "Your first enemy approaches. It's a filthy giant rat. Prepare to battle."
+sleep 5
+
+beast=45
+$playsound ./sounds/initSword.aiff
+
+until [[ $beast -le 1 && $hp -gt 1 || $beast -gt 1 && $hp -le 1 ]]
+do
+echo "Pick a number between 0 and 1 to attack. (0/1)"
+
+    swing=$(( $RANDOM % 2 ))
+
+        
+    read tarnished
+
+    if [[ $swing == $tarnished ]]; then
+        echo "You tear the flesh of the beast with a slash! Blood begins to gush from the wound!"
+        $playsound ./sounds/hitSword_1.aiff
+        beast=$(( beast -= $attack ))
+        if [[ $swing -eq 1 ]]; then
+            $playsound ./sounds/hitSword_1.aiff
+        else
+            $playsound ./sounds/hitSword_2.aiff
+        fi
+        #echo "$beast"
+    else
+        echo "You try to dodge, but the beast manages to hit you! You feel the blow and back away, ready to attack again!"
+        hp=$((hp -= 1 ))
+        $playsound ./sounds/beast_1.aiff
+        #echo "$hp"
+    fi
+done
+
+if [[ $beast -le 0 ]]; then
+    echo "Beast VANQUISHED! Congrats, fellow tarnished!"
+    echo "You have $hp hp left."
+    sleep 5
+elif [[ $hp -le 0 ]]; then
+    echo "You Died"
+    exit 3.5
+fi
+
+#Second Battle
+echo "You see a castle in the distance. Your heart tightens for a moment. But you know your journey have to take you there."
+sleep 4
+
+echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
+
+soldier=62
+$playsound ./sounds/initSword.aiff
+
+until [[ $soldier -le 1 && $hp -gt 1 || $soldier -gt 1 && $hp -le 1 ]]
+do
+echo "Pick a number between 0 and 1 to attack. (0/1)"
+
+    swing=$(( $RANDOM % 2 ))
+
+        
+    read tarnished
+
+    if [[ $swing == $tarnished ]]; then
+        echo "The soldier attack, but you manage to dodge the attack and plunge the blade into the soldier's flesh! Blood begins to gush from the wound!"
+        soldier=$(( soldier -= $attack ))
+        $playsound ./sounds/hitSword_3.aiff
+        #echo "$soldier"
+    else
+        echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
+        hp=$((hp -= 2 ))
+        $playsound ./sounds/hitSword_4.aiff
+        #echo "$hp"
+    fi
+done
+
+if [[ $soldier -le 0 ]]; then
+    echo "Soldier VANQUISHED! Congrats, fellow tarnished!"
+    echo "You have $hp hp left."
+    sleep 2
+elif [[ $hp -le 0 ]]; then
+    echo "You Died"
+    exit 2
+fi
+
+#First Level Up
+echo "You find a bonfire near the entrance to the castle. You decide to rest for a while before the upcoming fights."
+hp=$maxHp
+sleep 1
+
+until [[ $level -gt 1 ]]
+do
+echo "Choose a stat to increase.
+0 - hp + 1
+1 - attack + 1
+2 - magic + 1
+"
+
+read levelUp
+
+case $levelUp in 
+    0)
+        hp=$(( hp+=1 ))
+        maxHp=$hp
+        level=$(( level+=1 ))
+        ;;
+    1)
+        attack=$(( attack+=1 ))
+        level=$(( level+=1 ))
+        ;;
+    2)
+        magic=$(( magic+=1 ))
+        level=$(( level+=1 ))
+        ;;
+esac
+done
+
+$playsound ./sounds/levelUp.aiff &  LEVELMUSIC=$!
+levelUp &  LEVELUP=$!
+wait $LEVELMUSIC
+wait $LEVELUP
+
+sleep 1
+
+echo "You brace yourself, and leave for your journey again..."
+
+sleep 1
+
+
 #Margit Battle
 echo "You enter the castle. You feel a presence on the nearby tower. It's Margit, the Fell Omen."
 sleep 2
@@ -218,7 +345,7 @@ until [[ $margit -le 1 && $hp -gt 1 || $margit -gt 1 && $hp -le 1 ]]
 do
 echo "Pick a number between 0 and 4 to attack. (0-4)"
 
-    swing=4
+    swing=$(( $RANDOM % 5 ))
 
         
     read tarnished
