@@ -7,4 +7,4 @@ In case of error like:
 ------------------------------------------------------------------------
 
 run the command line (from this folder):
-sed -i 's/\r//' eldenring.sh
+sed -i 's/\r//' <example>.sh
