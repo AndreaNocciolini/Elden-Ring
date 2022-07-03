@@ -8,3 +8,14 @@ In case of error like:
 
 run the command line (from this folder):
 sed -i 's/\r//' <example>.sh
+
+For sound, tip from stackoverflow (CharlesDuffy)
+-------------------------------------------------------------------
+|   if command -v aplay >/dev/null 2>&1; then 
+|       playsound() { aplay "$@"; }; 
+|   elif command -v otherplayer >/dev/null 2>&1; then 
+|       playsound() { otherplayer "$@"; }; 
+|   else 
+|       playsound() { : "ignoring request to play a sound"; }; 
+|   fi
+-------------------------------------------------------------------
