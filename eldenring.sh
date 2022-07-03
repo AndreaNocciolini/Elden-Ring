@@ -8,7 +8,7 @@ playsound=afplay 2> /dev/null
 
 #Functions
 #Init Journey
-init() {
+initJourney() {
     sleep 1
     
     echo "."
@@ -84,7 +84,7 @@ if [[ $skip == $skipIntro ]]; then
     sleep 1.5
 else
     $playsound ./sounds/Awakening.aiff 2> /dev/null &  INITMUSIC=$!
-    init &  INITJOURNEY=$!
+    initJourney &  INITJOURNEY=$!
     wait $INITMUSIC
     wait $INITJOURNEY
 fi
