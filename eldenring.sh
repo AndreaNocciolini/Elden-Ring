@@ -102,6 +102,12 @@ echo "
 9 - Samurai
 "
 
+clean_stdin() #clean input so if the user put inputs before he have to they will be cleaned
+{
+    while read -e -t 1; do : ; done
+}
+
+clean_stdin
 read class
 
 case $class in
@@ -283,6 +289,7 @@ sleep 4
 echo ""
 echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
 echo ""
+sleep 4
 
 soldier=62
 $playsound ./sounds/initSword.aiff 2> /dev/null
