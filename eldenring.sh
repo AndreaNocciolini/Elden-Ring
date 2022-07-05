@@ -11,7 +11,60 @@ playsound=afplay 2> /dev/null
 #Clean input so if the user put inputs before he have to they will be cleaned
 clean_stdin()
 {
-    while read -e -t 1; do : ; done
+    while read -e -t 0.5; do : ; done
+}
+
+# Bonfire and actual Level Up
+bonfire(){
+    hp=$maxHp
+    sleep 1.5
+
+    until [[ $level -gt $prevLevel ]]
+    do
+        echo "Choose a stat to increase."
+        echo "0 - hp + 1"
+        echo "1 - attack + 1"
+        echo "2 - magic + 1"
+
+
+        clean_stdin
+
+        read levelUp
+        case $levelUp in 
+            0)
+                hp=$(( hp+=1 ))
+                maxHp=$hp
+                level=$(( level+=1 ))
+
+                checkLevelUp=$(( checkLevelUp+=1 ))
+                ;;
+            1)
+                attack=$(( attack+=1 ))
+                level=$(( level+=1 ))
+
+                checkLevelUp=$(( checkLevelUp+=1 ))
+                ;;
+            2)
+                magic=$(( magic+=1 ))
+                level=$(( level+=1 ))
+
+                checkLevelUp=$(( checkLevelUp+=1 ))
+                ;;
+            *)
+                echo "Please, choose a stats to increase."
+        esac
+    done
+
+    prevLevel=$level
+}
+
+#Level Up Effect
+levelUp() {
+echo "You leveled up."
+echo "Your level is now $level."
+echo "Your health points are now $hp."
+echo "Your attack power is now $attack."
+echo "Your magic power is now $magic."
 }
 
 #Init Journey
@@ -50,15 +103,6 @@ initJourney() {
     echo ""
 }
 
-#Level Up
-levelUp() {
-echo "You leveled up."
-echo "Your level is now $level."
-echo "Your health points are now $hp."
-echo "Your attack power is now $attack."
-echo "Your magic power is now $magic."
-}
-
 #Margit Cutscene
 margitEntrance() {
     sleep 5
@@ -85,7 +129,6 @@ echo "Press 1 to skip the intro or type anything else to play it."
 
 skip=1
 
-clean_stdin
 read skipIntro
 
 if [[ $skip == $skipIntro ]]; then
@@ -111,73 +154,101 @@ echo "
 9 - Samurai
 "
 
-clean_stdin
-read class
+checkClass=0
 
-case $class in
-    0)
-        type="Wretch"
-        hp=10
-        attack=10
-        magic=10
-        ;;
-    1)
-        type="Warrior"
-        hp=15
-        attack=15
-        magic=0
-        ;;
-    2)
-        type="Prophet"
-        hp=8
-        attack=11
-        magic=11
-        ;;
-    3)
-        type="Hero"
-        hp=12
-        attack=10
-        magic=8
-        ;;
-    4)
-        type="Vagabond"
-        hp=14
-        attack=11
-        magic=5
-        ;;
-    5)
-        type="Prisoner"
-        hp=14
-        attack=14
-        magic=2
-        ;;
-    6)
-        type="Bandit"
-        hp=10
-        attack=15
-        magic=5
-        ;;
-    7)
-        type="Astrologer"
-        hp=12
-        attack=7
-        magic=11
-        ;;
-    8)
-        type="Confessor"
-        hp=16
-        attack=8
-        magic=6
-        ;;
-    9)
-        type="Samurai"
-        hp=13
-        attack=17
-        magic=0
-        ;;
-esac
+until [[ $checkClass -eq 1 ]]
+do
+    clean_stdin
+    read class
+
+    case $class in
+        0)
+            type="Wretch"
+            hp=10
+            attack=10
+            magic=10
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        1)
+            type="Warrior"
+            hp=15
+            attack=15
+            magic=0
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        2)
+            type="Prophet"
+            hp=8
+            attack=11
+            magic=11
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        3)
+            type="Hero"
+            hp=12
+            attack=10
+            magic=8
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        4)
+            type="Vagabond"
+            hp=14
+            attack=11
+            magic=5
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        5)
+            type="Prisoner"
+            hp=14
+            attack=14
+            magic=2
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        6)
+            type="Bandit"
+            hp=10
+            attack=15
+            magic=5
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        7)
+            type="Astrologer"
+            hp=12
+            attack=7
+            magic=11
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        8)
+            type="Confessor"
+            hp=16
+            attack=8
+            magic=6
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        9)
+            type="Samurai"
+            hp=13
+            attack=17
+            magic=0
+
+            checkClass=$(( checkClass+=1 ))
+            ;;
+        *)
+            echo "Please, choose a valid class."
+    esac
+done
 
 level=1
+prevLevel=$level
 maxHp=$hp
 
 sleep 3
@@ -211,18 +282,18 @@ sleep 1.5
 echo ""
 echo "You wake up from a deep sleep. It seems like centuries since you last opened your eyes."
 echo ""
-sleep 1.2
+sleep 4
 
 echo ""
 echo "You gather your strength for a few minutes before setting off on your journey."
 echo ""
-sleep 1.2
+sleep 4
 
 #First Battle
 echo ""
 echo "Your first enemy approaches. It's a filthy giant rat. Prepare to battle."
 echo ""
-sleep 5
+sleep 4
 
 beast=45
 $playsound ./sounds/initSword.aiff 2> /dev/null
@@ -284,113 +355,266 @@ do
     fi
 done
 
-#Second Battle
+#First Choice
 echo ""
 echo "You see a castle in the distance. Your heart tightens for a moment. But you know your journey have to take you there."
 echo ""
 sleep 4
 
 echo ""
-echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
+echo "As you approach the castle, you notice someone near the entrance. Perhaps sneaking by the side of the road might be the best choice, but you'll need to beware of lurking beasts."
 echo ""
 sleep 4
 
-soldier=62
-$playsound ./sounds/initSword.aiff 2> /dev/null
+echo ""
+echo "Press 1 to continue on the road or press 2 to pass through the woods."
+echo ""
 
-until [[ $soldier -le 1 && $hp -gt 1 || $soldier -gt 1 && $hp -le 1 ]]
-do  
-    echo ""
-    echo "Pick a number between 0 and 1 to attack. (0/1)"
+checkCrossroads=0
 
-    swing=$(( $RANDOM % 2 ))
-
-    clean_stdin
-    read tarnished
-
-    if [[ $swing == $tarnished ]]; then
-        echo ""
-        echo -e "\e[1;32mYOU HIT THE SOLDIER! \e[0m"
-        echo "The soldier attack, but you manage to dodge the attack and plunge the blade into the soldier's flesh! Blood begins to gush from the wound!"
-        echo ""
-
-        soldier=$(( soldier -= $attack ))
-        $playsound ./sounds/hitSword_3.aiff 2> /dev/null
-        sleep 1
-
-        #echo "$soldier"
-    else
-        echo ""
-        echo -e "\e[1;31mTHE SOLDIER HITS YOU! \e[0m"
-        echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
-        echo ""
-
-        hp=$((hp -= 2 ))
-        $playsound ./sounds/hitSword_4.aiff 2> /dev/null
-        sleep 1
-
-        #echo "$hp"
-    fi
-done
-
-checkBattleOutcome=0
-until [[ $checkBattleOutcome -eq 1 ]]
+clean_stdin  
+read choice
+until [[ $checkCrossroads -eq 1 ]]
 do
-    if [[ $soldier -le 0 ]]; then
+    if [[ $choice -eq 1 ]]; then
         echo ""
-        echo "Soldier VANQUISHED! Congrats, fellow tarnished!"
-        echo "You have $hp hp left."
+        echo "You decide to continue on the road."
         echo ""
         
-        checkBattleOutcome=$(( checkBattleOutcome+=1 ))
+        checkCrossroads=$(( checkCrossroads+=1 ))
         sleep 4
 
-    elif [[ $hp -le 0 ]]; then
-        echo "You Died"
-        exit 3
+    elif [[ $choice -eq 2 ]]; then
+        echo ""
+        echo "You decide to pass through the woods."
+        echo ""
+                
+        checkCrossroads=$(( checkCrossroads+=1 ))
+        sleep 4
     fi
 done
+
+if [[ $choice -eq 1 ]]; then
+    echo ""
+    echo "While you are approaching the castle, a goulish humanoid charge at a you. It's a Godrick's soldier! Prepare to battle."
+    echo ""
+    sleep 4
+
+    soldier=62
+    $playsound ./sounds/initSword.aiff 2> /dev/null
+
+    until [[ $soldier -le 1 && $hp -gt 1 || $soldier -gt 1 && $hp -le 1 ]]
+    do  
+        echo ""
+        echo "Pick a number between 0 and 1 to attack. (0/1)"
+
+        swing=$(( $RANDOM % 2 ))
+
+        clean_stdin
+        read tarnished
+
+        if [[ $swing == $tarnished ]]; then
+            echo ""
+            echo -e "\e[1;32mYOU HIT THE SOLDIER! \e[0m"
+            echo "The soldier attack, but you manage to dodge the attack and plunge the blade into the soldier's flesh! Blood begins to gush from the wound!"
+            echo ""
+
+            soldier=$(( soldier -= $attack ))
+            $playsound ./sounds/hitSword_3.aiff 2> /dev/null
+            sleep 1
+
+            #echo "$soldier"
+        else
+            echo ""
+            echo -e "\e[1;31mTHE SOLDIER HITS YOU! \e[0m"
+            echo "You try to dodge, but the soldier manages to hit you! You feel the blow and back away, ready to attack again!"
+            echo ""
+
+            hp=$((hp -= 2 ))
+            $playsound ./sounds/hitSword_4.aiff 2> /dev/null
+            sleep 1
+
+            #echo "$hp"
+        fi
+    done
+
+    checkBattleOutcome=0
+    until [[ $checkBattleOutcome -eq 1 ]]
+    do
+        if [[ $soldier -le 0 ]]; then
+            echo ""
+            echo "Soldier VANQUISHED! Congrats, fellow tarnished!"
+            echo "You have $hp hp left."
+            echo ""
+            
+            checkBattleOutcome=$(( checkBattleOutcome+=1 ))
+            sleep 4
+
+        elif [[ $hp -le 0 ]]; then
+            echo "You Died"
+            exit 3
+        fi
+    done
+
+elif [[ $choice -eq 2 ]]; then
+    echo ""
+    echo "As soon as you step into the forest, you hear a rustle coming from the bushes. A rabid rat jumps out, ready to attack you"
+    echo ""
+    sleep 4
+
+    rat=30
+    $playsound ./sounds/initSword.aiff 2> /dev/null
+
+    until [[ $rat -le 1 && $hp -gt 1 || $rat -gt 1 && $hp -le 1 ]]
+    do  
+        echo ""
+        echo "Pick a number between 0 and 1 to attack. (0/1)"
+
+        swing=$(( $RANDOM % 2 ))
+
+        clean_stdin  
+        read tarnished
+
+        if [[ $swing == $tarnished ]]; then
+            echo ""
+            echo -e "\e[1;32mYOU HIT THE RAT! \e[0m"
+            echo "You hit the rat with your sword! It immediatly moves away, looking at you with fear"
+            echo ""
+
+            rat=$(( rat -= $attack ))
+            if [[ $swing -eq 1 ]]; then
+                $playsound ./sounds/hitSword_1.aiff 2> /dev/null
+            else
+                $playsound ./sounds/hitSword_2.aiff 2> /dev/null
+            fi
+            sleep 1
+
+            #echo "$rat"
+        else
+            echo ""
+            echo -e "\e[1;31mTHE BEAST HIT YOU! \e[0m"
+            echo "You try to hit, but the beast dodges and bites you hard! You back off a bit, then prepare to strike again!"
+            echo ""
+
+            hp=$((hp -= 1 ))
+            $playsound ./sounds/beast_1.aiff 2> /dev/null
+            sleep 1
+
+            #echo "$hp"
+        fi
+    done
+
+    checkBattleOutcome=0
+    until [[ $checkBattleOutcome -eq 1 ]]
+    do
+        if [[ $rat -le 0 ]]; then
+            echo ""
+            echo "Rat VANQUISHED! Congrats, fellow tarnished!"
+            echo "You have $hp hp left."
+            echo ""
+            
+            checkBattleOutcome=$(( checkBattleOutcome+=1 ))
+            sleep 4
+
+        elif [[ $hp -le 0 ]]; then
+            echo "You Died"
+            exit 3
+        fi
+    done
+
+    echo ""
+    echo "You continue on your way, but one step away from the entrance a wolf appears in front of you. The beast studies you carefully for a few seconds, then prepares for the assault!"
+    echo ""
+    sleep 4
+
+    loneWolf=72
+    $playsound ./sounds/initSword.aiff 2> /dev/null
+
+    until [[ $loneWolf -le 1 && $hp -gt 1 || $loneWolf -gt 1 && $hp -le 1 ]]
+    do  
+        echo ""
+        echo "Pick a number between 0 and 1 to attack. (0/1)"
+
+        swing=$(( $RANDOM % 2 ))
+
+        clean_stdin  
+        read tarnished
+
+        if [[ $swing == $tarnished ]]; then
+            echo ""
+            echo -e "\e[1;32mYOU HIT THE WOLF! \e[0m"
+            echo "The wolf jumps on you, but you manage to push it back with a firm push and hit him with your blade!"
+            echo ""
+
+            loneWolf=$(( loneWolf -= $attack ))
+            $playsound ./sounds/hitSword_2.aiff 2> /dev/null
+            sleep 1
+
+            #echo "$loneWolf"
+        else
+            echo ""
+            echo -e "\e[1;31mTHE WOLF HIT YOU! \e[0m"
+            echo "The wolf jumps on you! You slash yourself, but you can only hit the air. The beast bites you hard, causing you to bleed profusely!"
+            echo ""
+
+            hp=$((hp -= 3 ))
+            $playsound ./sounds/beast_1.aiff 2> /dev/null
+            sleep 1
+
+            #echo "$hp"
+        fi
+    done
+
+    checkBattleOutcome=0
+    until [[ $checkBattleOutcome -eq 1 ]]
+    do
+        if [[ $loneWolf -le 0 ]]; then
+            echo ""
+            echo "Wolf VANQUISHED! Congrats, fellow tarnished!"
+            echo "You have $hp hp left."
+            echo ""
+            
+            checkBattleOutcome=$(( checkBattleOutcome+=1 ))
+            sleep 4
+
+        elif [[ $hp -le 0 ]]; then
+            echo "You Died"
+            exit 3
+        fi
+    done
+
+    echo ""
+    echo "After a grueling battle, you finally arrive at the entrance."
+    echo ""
+    sleep 4
+
+    echo ""
+    echo "Just before entering, you notice a chest hidden in the trees. There's an iron sword inside!1"
+    echo ""
+    sleep 4
+
+    echo ""
+    echo "The road has been more difficult than expected, yet you smile at this little stroke of luck."
+    echo ""
+    sleep 4
+
+    attack=$(( attack+=3 ))
+    echo "Your attack increase! (You have $attack attack)"
+fi
+
 
 #First Level Up
 echo ""
 echo "You find a bonfire near the entrance to the castle. You decide to rest for a while before the upcoming fights."
 echo ""
-hp=$maxHp
-sleep 1.5
 
-until [[ $level -gt 1 ]]
-do
-echo "Choose a stat to increase.
-0 - hp + 1
-1 - attack + 1
-2 - magic + 1
-"
-
-clean_stdin
-read levelUp
-
-case $levelUp in 
-    0)
-        hp=$(( hp+=1 ))
-        maxHp=$hp
-        level=$(( level+=1 ))
-        ;;
-    1)
-        attack=$(( attack+=1 ))
-        level=$(( level+=1 ))
-        ;;
-    2)
-        magic=$(( magic+=1 ))
-        level=$(( level+=1 ))
-        ;;
-esac
-done
+bonfire
 
 $playsound ./sounds/levelUp.aiff 2> /dev/null &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
 wait $LEVELUP
-sleep 1
+sleep 3
 
 echo "."
 sleep 1
@@ -516,42 +740,14 @@ done
 echo ""
 echo "You find a bonfire where the fall omen once stood. You decide to rest for a while before the upcoming fights."
 echo ""
-hp=$maxHp
-sleep 1
 
-until [[ $level -gt 2 ]]
-do
-    echo ""
-    echo "You think back to the battle just faced. Defeating such a strong enemy charges you with determination. Choose a stat to increase.
-0 - hp + 3
-1 - attack + 3
-2 - magic + 3
-"
-    clean_stdin
-    read levelUp
-
-    case $levelUp in 
-        0)
-            hp=$(( hp+=3 ))
-            maxHp=$hp
-            level=$(( level+=1 ))
-            ;;
-        1)
-            attack=$(( attack+=3 ))
-            level=$(( level+=1 ))
-            ;;
-        2)
-            magic=$(( magic+=3 ))
-            level=$(( level+=1 ))
-            ;;
-esac
-done
+bonfire
 
 $playsound ./sounds/levelUp.aiff 2> /dev/null &  LEVELMUSIC=$!
 levelUp &  LEVELUP=$!
 wait $LEVELMUSIC
 wait $LEVELUP
-sleep 1
+sleep 3
 
 echo "."
 sleep 1
