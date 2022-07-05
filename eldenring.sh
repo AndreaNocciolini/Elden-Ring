@@ -7,6 +7,13 @@
 playsound=afplay 2> /dev/null
 
 #Functions
+
+#Clean input so if the user put inputs before he have to they will be cleaned
+clean_stdin()
+{
+    while read -e -t 1; do : ; done
+}
+
 #Init Journey
 initJourney() {
     sleep 1
@@ -77,6 +84,8 @@ margitEntrance() {
 echo "Press 1 to skip the intro or type anything else to play it."
 
 skip=1
+
+clean_stdin
 read skipIntro
 
 if [[ $skip == $skipIntro ]]; then
@@ -101,11 +110,6 @@ echo "
 8 - Confessor
 9 - Samurai
 "
-
-clean_stdin() #clean input so if the user put inputs before he have to they will be cleaned
-{
-    while read -e -t 1; do : ; done
-}
 
 clean_stdin
 read class
@@ -230,7 +234,7 @@ do
 
     swing=$(( $RANDOM % 2 ))
 
-        
+    clean_stdin  
     read tarnished
 
     if [[ $swing == $tarnished ]]; then
@@ -301,7 +305,7 @@ do
 
     swing=$(( $RANDOM % 2 ))
 
-        
+    clean_stdin
     read tarnished
 
     if [[ $swing == $tarnished ]]; then
@@ -362,6 +366,7 @@ echo "Choose a stat to increase.
 2 - magic + 1
 "
 
+clean_stdin
 read levelUp
 
 case $levelUp in 
@@ -426,7 +431,7 @@ do
 
     swing=$(( $RANDOM % 5 ))
 
-        
+    clean_stdin  
     read tarnished
 
     if [[ $swing == $tarnished ]]; then
@@ -522,7 +527,7 @@ do
 1 - attack + 3
 2 - magic + 3
 "
-
+    clean_stdin
     read levelUp
 
     case $levelUp in 
