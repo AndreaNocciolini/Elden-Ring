@@ -11,7 +11,7 @@ playsound=afplay 2> /dev/null
 #Clean input so if the user put inputs before he have to they will be cleaned
 clean_stdin()
 {
-    while read -e -t 0.5; do : ; done
+    while read -e -t 1; do : ; done
 }
 
 # Bonfire and actual Level Up
